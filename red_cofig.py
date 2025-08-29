@@ -1,3 +1,6 @@
+from netmiko import ConnectHandler
+
+# ========= Definición de dispositivos =========
 devices = {
     "sw1": {
         "device_type": "cisco_ios",
@@ -25,7 +28,7 @@ devices = {
     },
 }
 
-
+# ========= Configuración de Switches =========
 sw1_config = [
     "vlan 210",
     " name Ventas",
@@ -63,52 +66,59 @@ sw2_config = [
     " switchport trunk allowed vlan 210,211,212,1099,219",
 ]
 
+# ========= Configuración de Router1 (MikroTik) =========
+# Subinterfaces VLAN, direcciones, NAT y DHCP
 r1_config = [
-    "interface g0/0.210",
-    " encapsulation dot1Q 210",
-    " ip address 10.10.10.33 255.255.255.224",
-    "interface g0/0.211",
-    " encapsulation dot1Q 211",
-    " ip address 10.10.10.65 255.255.255.240",
-    "interface g0/0.212",
-    " encapsulation dot1Q 212",
-    " ip address 10.10.10.81 255.255.255.240",
-    "ip dhcp pool VENTAS",
-    " network 10.10.10.32 255.255.255.224",
-    " default-router 10.10.10.33",
-    "ip dhcp pool TECNICA",
-    " network 10.10.10.64 255.255.255.240",
-    " default-router 10.10.10.65",
-    "ip nat inside source list 1 interface g0/1 overload",
-    "access-list 1 permit 10.10.10.32 0.0.0.31",
-    "access-list 1 permit 10.10.10.64 0.0.0.15",
+    # Crear VLANs sobre ether2 (troncal con SW1)
+    "/interface vlan add interface=ether2 name=vlan210 vlan-id=210",
+    "/interface vlan add interface=ether2 name=vlan211 vlan-id=211",
+    "/interface vlan add interface=ether2 name=vlan212 vlan-id=212",
+    # Direccionamiento
+    "/ip address add address=10.10.10.33/27 interface=vlan210",
+    "/ip address add address=10.10.10.65/28 interface=vlan211",
+    "/ip address add address=10.10.10.81/28 interface=vlan212",
+    # DHCP para Ventas
+    "/ip pool add name=ventas_pool ranges=10.10.10.34-10.10.10.62",
+    "/ip dhcp-server add name=ventas_dhcp interface=vlan210 address-pool=ventas_pool disabled=no",
+    "/ip dhcp-server network add address=10.10.10.32/27 gateway=10.10.10.33 dns-server=8.8.8.8",
+    # DHCP para Técnica
+    "/ip pool add name=tecnica_pool ranges=10.10.10.66-10.10.10.78",
+    "/ip dhcp-server add name=tecnica_dhcp interface=vlan211 address-pool=tecnica_pool disabled=no",
+    "/ip dhcp-server network add address=10.10.10.64/28 gateway=10.10.10.65 dns-server=8.8.8.8",
+    # NAT para Ventas y Técnica (salida a Internet por ether1)
+    "/ip firewall nat add chain=srcnat src-address=10.10.10.32/27 out-interface=ether1 action=masquerade",
+    "/ip firewall nat add chain=srcnat src-address=10.10.10.64/28 out-interface=ether1 action=masquerade",
 ]
 
-
+# ========= Configuración de Router2 (MikroTik remoto) =========
+# Acá solo confirmamos trunk hacia SW2
 r2_config = [
-    "interface g0/0",
-    " no shutdown",
-    "description Trunk hacia SW2",
+    "/interface bridge add name=br-trunk vlan-filtering=yes",
+    "/interface bridge port add bridge=br-trunk interface=ether1 pvid=219",
+    "/interface bridge port add bridge=br-trunk interface=ether2 pvid=219",
+    "/interface bridge vlan add bridge=br-trunk vlan-ids=1099 tagged=br-trunk,ether1,ether2",
+    "/interface bridge vlan add bridge=br-trunk vlan-ids=219 untagged=ether1,ether2",
 ]
 
-from netmiko import ConnectHandler
-
+# ========= Ejecución =========
 for name, device in devices.items():
-    print(f"Conectando a {name}...")
+    print(f"\n===== Conectando a {name.upper()} ({device['host']}) =====")
     net_connect = ConnectHandler(**device)
 
     if name == "sw1":
-        net_connect.send_config_set(sw1_config)
-        output = net_connect.send_command("show vlan brief")
+        output = net_connect.send_config_set(sw1_config)
+        print(net_connect.send_command("show vlan brief"))
     elif name == "sw2":
-        net_connect.send_config_set(sw2_config)
-        output = net_connect.send_command("show vlan brief")
+        output = net_connect.send_config_set(sw2_config)
+        print(net_connect.send_command("show vlan brief"))
     elif name == "r1":
-        net_connect.send_config_set(r1_config)
-        output = net_connect.send_command("show ip route")
+        for cmd in r1_config:
+            net_connect.send_command(cmd)
+        print(net_connect.send_command("/ip address print"))
+        print(net_connect.send_command("/ip firewall nat print"))
     elif name == "r2":
-        net_connect.send_config_set(r2_config)
-        output = net_connect.send_command("show ip interface brief")
+        for cmd in r2_config:
+            net_connect.send_command(cmd)
+        print(net_connect.send_command("/interface bridge vlan print"))
 
-    print(output)
     net_connect.disconnect()
