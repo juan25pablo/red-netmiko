@@ -1,5 +1,6 @@
 📑 Documentación del Proyecto
 🔹 Subredes (VLSM)
+
 VLAN / Red	ID de VLAN	Dirección de red	Máscara	Rango de hosts válidos	Broadcast
 
 Gestión	1099	10.10.10.0	/29 (255.255.255.248)	10.10.10.1 – 10.10.10.6	10.10.10.7
