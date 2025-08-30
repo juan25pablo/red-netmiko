@@ -37,8 +37,8 @@ En todos los equipos:
 - Comandos de verificación (show vlan brief, show ip route, show ip interface brief).
 
 
-🔹Agregar breve explicación del rol de Netmiko. Algo así:
-Netmiko se usa como librería Python para automatizar configuraciones de red por SSH. Permite enviar comandos, recibir salidas y validar resultados sin intervención manua
+🔹Explicación del rol de Netmiko:
+Netmiko se usa como librería Python para automatizar configuraciones de red por SSH. Permite enviar comandos, recibir salidas y validar resultados sin intervención manual.
 
 
 🔹 Cómo ejecutar el script
