@@ -3,8 +3,6 @@
 
 🔹 Subredes (VLSM)
 
-VLAN / Red	ID de VLAN	Dirección de red	Máscara	Rango de hosts válidos	Broadcast
-
 Gestión	1099	10.10.10.0	/29 (255.255.255.248)	10.10.10.1 – 10.10.10.6	10.10.10.7
 
 Ventas	210	10.10.10.32	/27 (255.255.255.224)	10.10.10.33 – 10.10.10.62	10.10.10.63
@@ -13,6 +11,7 @@ Técnica	211	10.10.10.64	/28 (255.255.255.240)	10.10.10.65 – 10.10.10.78	10.10
 
 Visitantes	212	10.10.10.80	/28 (255.255.255.240)	10.10.10.81 – 10.10.10.94	10.10.10.95
 
+Nativa	219	10.10.10.96	/30 (255.255.255.252)	10.10.10.97 – 10.10.10.98	10.10.10.99
 
 
 🔹 Objetivo del Script
@@ -37,6 +36,9 @@ En R2 (Router Secundario):
 En todos los equipos:
 - Comandos de verificación (show vlan brief, show ip route, show ip interface brief).
 
+
+🔹Agregar breve explicación del rol de Netmiko. Algo así:
+Netmiko se usa como librería Python para automatizar configuraciones de red por SSH. Permite enviar comandos, recibir salidas y validar resultados sin intervención manua
 
 
 🔹 Cómo ejecutar el script
