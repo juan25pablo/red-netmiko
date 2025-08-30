@@ -14,6 +14,7 @@ Técnica	211	10.10.10.64	/28 (255.255.255.240)	10.10.10.65 – 10.10.10.78	10.10
 Visitantes	212	10.10.10.80	/28 (255.255.255.240)	10.10.10.81 – 10.10.10.94	10.10.10.95
 
 
+
 🔹 Objetivo del Script
 
 El script red_config.py automatiza la configuración de la red mediante Netmiko, conectándose por SSH a los dispositivos de red (SW1, SW2, R1 y R2).
@@ -35,6 +36,7 @@ En R2 (Router Secundario):
 
 En todos los equipos:
 - Comandos de verificación (show vlan brief, show ip route, show ip interface brief).
+
 
 
 🔹 Cómo ejecutar el script
@@ -60,6 +62,8 @@ Verificar la salida en consola:
 - VLANs creadas en los switches.
 - Subinterfaces y rutas en el router.
 - Interfaces activas en R2.
+
+
 
 🔹Pruebas
 
