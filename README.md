@@ -75,12 +75,15 @@ Debian (Gestión) → acceso SSH a todos los dispositivos.
 📸 Imagenes del linux Debian cuando se ejecuto el scrpit
 
 🔹 Captura 1
+
 ![Captura 1](https://github.com/user-attachments/assets/1c09720c-fded-4f30-a011-4a2aae574a4c)
 
 🔹 Captura 2 
+
 ![Captura 2](https://github.com/user-attachments/assets/634c02d7-d320-48bd-a10f-ceeb76ac8723)
 
 🔹 Captura 3
+
 ![Captura 3](https://github.com/user-attachments/assets/0ce35c04-acd3-4329-b996-5739ab8e5303)
 
 
