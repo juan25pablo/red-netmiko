@@ -1,4 +1,6 @@
 📑 Documentación del Proyecto
+
+
 🔹 Subredes (VLSM)
 
 VLAN / Red	ID de VLAN	Dirección de red	Máscara	Rango de hosts válidos	Broadcast
